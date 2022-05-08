@@ -33,6 +33,13 @@ class RwsdTwootrToryApplicationTests {
     }
 
     @Test
+    public void shouldNotAuthenticateUnknownUser() {
+        final Optional<SenderEndPoint> senderEndPoint = this.twootr.onLogon("__No__User__", PASSWORD, mockReceiverEndPoint);
+
+        assertThat(senderEndPoint.isEmpty()).isTrue();
+    }
+
+    @Test
     public void shouldNotAuthenticateWithWrongPassword() {
         final Optional<SenderEndPoint> senderEndPoint = this.twootr.onLogon(USER_ID, "wrong password", mockReceiverEndPoint);
 
