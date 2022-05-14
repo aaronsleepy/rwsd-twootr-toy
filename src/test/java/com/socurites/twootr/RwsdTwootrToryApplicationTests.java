@@ -1,5 +1,6 @@
 package com.socurites.twootr;
 
+import com.socurites.twootr.domain.FollowStatus;
 import com.socurites.twootr.domain.Twootr;
 import com.socurites.twootr.port.endpoint.ReceiverEndPoint;
 import com.socurites.twootr.port.endpoint.SenderEndPoint;
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(SpringExtension.class)
 class RwsdTwootrToryApplicationTests {
     private static final String USER_ID = "Joe";
+    private static final String OTHER_USER_ID = "John";
     private static final String PASSWORD = "ahc5ez";
 
     private final ReceiverEndPoint mockReceiverEndPoint = mock(ReceiverEndPoint.class);
@@ -27,9 +29,14 @@ class RwsdTwootrToryApplicationTests {
 
     @Test
     public void shouldBeAbleToAuthenticateUser() {
-        final Optional<SenderEndPoint> senderEndPoint = this.twootr.onLogon(USER_ID, PASSWORD, mockReceiverEndPoint);
+        logon(USER_ID, PASSWORD);
+    }
 
+    private SenderEndPoint logon(final String userId, final String password) {
+        final Optional<SenderEndPoint> senderEndPoint = this.twootr.onLogon(userId, password, mockReceiverEndPoint);
         assertThat(senderEndPoint.isPresent()).isTrue();
+
+        return senderEndPoint.get();
     }
 
     @Test
@@ -44,5 +51,14 @@ class RwsdTwootrToryApplicationTests {
         final Optional<SenderEndPoint> senderEndPoint = this.twootr.onLogon(USER_ID, "wrong password", mockReceiverEndPoint);
 
         assertThat(senderEndPoint.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void shouldFollowValidUser() {
+        final SenderEndPoint senderEndPoint = logon(USER_ID, PASSWORD);
+
+        final FollowStatus followStatus = senderEndPoint.onFollow(OTHER_USER_ID);
+
+        assertThat(followStatus).isEqualTo(FollowStatus.SUCCESS);
     }
 }
