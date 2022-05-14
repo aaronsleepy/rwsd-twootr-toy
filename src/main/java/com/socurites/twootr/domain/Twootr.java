@@ -28,8 +28,11 @@ public class Twootr {
 
         final User authenticatedUser = authenticatedUsers.get(userId);
         if (null != authenticatedUser && authenticatedUser.getPassword().equals(password)) {
-            return Optional.of(new SenderEndPoint());
+            return Optional.of(new SenderEndPoint(authenticatedUser, this));
         }
         return Optional.empty();
+    }
+
+    public FollowStatus onFollow(final User user, final String userIdToFollow) {
     }
 }

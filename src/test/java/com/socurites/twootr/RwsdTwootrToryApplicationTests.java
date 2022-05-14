@@ -61,4 +61,14 @@ class RwsdTwootrToryApplicationTests {
 
         assertThat(followStatus).isEqualTo(FollowStatus.SUCCESS);
     }
+
+    @Test
+    public void sholdNotDuplicateFollowValidUser() {
+        final SenderEndPoint senderEndPoint = logon(USER_ID, PASSWORD);
+
+        senderEndPoint.onFollow(OTHER_USER_ID);
+
+        final FollowStatus followStatus = senderEndPoint.onFollow(OTHER_USER_ID);
+        assertThat(followStatus).isEqualTo(FollowStatus.ALREADY_FOLLOWING);
+    }
 }
